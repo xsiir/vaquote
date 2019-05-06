@@ -15,7 +15,7 @@ public abstract class CRUDOperations<T> {
 	public Integer save(T objectToSave) {
 
 		Session session = null;
-		Optional<T> optionalObject = null;
+		Optional<T> optionalObject = Optional.ofNullable(null);
 		Integer savedObjectID = 0;
 
 		try {

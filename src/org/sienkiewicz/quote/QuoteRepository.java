@@ -10,16 +10,23 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.sienkiewcz.utils.HibernateUtils;
+import org.sienkiewicz.api.AddingOperation;
 import org.sienkiewicz.api.CRUDOperations;
+import org.sienkiewicz.api.CRUDStrategy;
+import org.sienkiewicz.api.IOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class QuoteRepository<T> extends CRUDOperations<Quote>{
 
+	/**
+	 * 
+	 * @return liczba wszystkich krotek dla tabeli Quote
+	 */
 	Long rowCount(){
 
 		Session session = null;
-		Long rows = (long) 0;
+		Long rows = 0L;
 
 		try {
 			session = HibernateUtils.getSessionFactory().openSession();
@@ -42,7 +49,11 @@ public class QuoteRepository<T> extends CRUDOperations<Quote>{
 		return rows;
 	}
 
-	public Optional<Quote> getRandom(Long rows) {
+	/**
+	 * 
+	 * @return losowy cytat z zakresu od pierwszej do ostatniej krotki w tabeli Quotes.
+	 */
+	public Optional<Quote> getRandom() {
 		
 		Session session = null;
 		Optional<Quote> quote = Optional.ofNullable(null);
@@ -52,7 +63,7 @@ public class QuoteRepository<T> extends CRUDOperations<Quote>{
 			
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
-			quote = Optional.of(session.get(Quote.class, random.nextInt(rows.intValue())));
+			quote = Optional.of(session.get(Quote.class, random.nextInt(rowCount().intValue())));
 			session.getTransaction().commit();
 			
 		}catch (HibernateException e) {
@@ -63,10 +74,20 @@ public class QuoteRepository<T> extends CRUDOperations<Quote>{
 		return quote;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void update(Long id, Quote object) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Integer save(Quote quote) {
+		CRUDStrategy<Quote, Integer> strategy = new CRUDStrategy<>();
+		Integer x = strategy.execute(new AddingOperation<>(), quote);
+		System.out.println(x);
+		return 10;
 	}
 
 }

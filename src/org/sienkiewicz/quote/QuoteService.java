@@ -16,31 +16,44 @@ class QuoteService {
 		this.quoteRepository = quoteRepository;
 	}
 	
+
+	/**
+	 *
+	 * @return losowy cytat z bazy danych
+	 */
 	Optional<Quote> getRandomQuote() {
 		Optional<Quote> randomQuote = Optional.ofNullable(null);
-		Long rows = quoteRepository.rowCount();
-		System.out.println("MAMY KOLUMNY! " + rows);
-
-		
-		if(rows!=0) {
-			randomQuote = quoteRepository.getRandom(rows);
-			System.out.println("TWOJ RANDOM TO : " + randomQuote.get());
-		}
+		randomQuote = quoteRepository.getRandom();
 		
 		return randomQuote;
 	}
 
+
+	/**
+	 * 
+	 * @param id - ID obiektu który zostanie wyciagniêty z bazy danych
+	 * @return zwraca obiekt cytatu o podanym w parametrze @id, opakowanego w Optionala.
+	 */
 	Optional<Quote> getQuoteById(Integer id) {
 		return quoteRepository.get(Quote.class, id);
 	}
-
+	
+	
+	/**
+	 * 
+	 * @param quoteModel
+	 * @return
+	 */
 	boolean addQuote(QuoteModel quoteModel) {
-		Quote quote = QuoteConverter.convertModelToDTO(quoteModel);
-		int id = quoteRepository.save(quote);
+		int id = quoteRepository.save(
+				QuoteConverter.convertModelToDTO(quoteModel));
 		
-		boolean isOperationSuccesful = (id==0) ? false : true;
-		
-		return isOperationSuccesful;
+		return isOperationSuccesful(id);
+	}
+
+
+	private boolean isOperationSuccesful(int id) {
+		return (id==0) ? false : true;
 	}
 
 }

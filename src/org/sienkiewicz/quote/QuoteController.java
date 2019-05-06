@@ -28,7 +28,7 @@ class QuoteController {
 	private ResponseEntity<Quote> getRandomQuote() {
 		
 		Optional<Quote> randomQuote = quoteService.getRandomQuote();
-		ResponseEntity<Quote> response = getHttpResponseWithGivenQuote(randomQuote);
+		ResponseEntity<Quote> response = checkIfFound(randomQuote);
 		
 		return response;
 
@@ -38,7 +38,7 @@ class QuoteController {
 	private ResponseEntity<Quote> getQuote(@PathVariable("id") Integer id ) {
 
 		Optional<Quote> quote = quoteService.getQuoteById(id);
-		ResponseEntity<Quote> response = getHttpResponseWithGivenQuote(quote);
+		ResponseEntity<Quote> response = checkIfFound(quote);
 		
 		return response;
 	}
@@ -57,7 +57,7 @@ class QuoteController {
 		return null;
 	}
 	
-	private ResponseEntity<Quote> getHttpResponseWithGivenQuote(Optional<Quote> quote) {
+	private ResponseEntity<Quote> checkIfFound(Optional<Quote> quote) {
 		ResponseEntity<Quote> response = quote.isPresent() ? 
 				new ResponseEntity<Quote>(quote.get(), HttpStatus.OK) : 
 				new ResponseEntity<Quote>(HttpStatus.NOT_FOUND);
